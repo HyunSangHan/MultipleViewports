@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Multiple Viewports",
+  "version": "0.1.0",
+  "description": "View desktop and mobile UI at the same time!",
+  "icons": {},
+  // "default_locale": "ko",
+  "sidebar_action": {
+    "default_page": "index.html", 
+  //   "default_icon": {                
+  //     "16": "images/logo5_1.png"
+  // },
+    "default_title": "Multiview",      
+    "use_navigation_bar": false,
+  }
+}
