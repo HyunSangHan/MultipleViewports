@@ -5,12 +5,18 @@
   "description": "View desktop and mobile UI at the same time!",
   "icons": {},
   // "default_locale": "ko",
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "sidebar_action": {
     "default_page": "index.html", 
   //   "default_icon": {                
   //     "16": "images/logo5_1.png"
   // },
     "default_title": "Multiview",      
-    "use_navigation_bar": false
+    "use_navigation_bar": true
   }
 }
