@@ -9,8 +9,15 @@
     "tabs"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "persistent": false
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["extension_content_script.js"]
+    }
+  ], 
   "sidebar_action": {
     "default_page": "index.html", 
   //   "default_icon": {                
@@ -18,5 +25,8 @@
   // },
     "default_title": "Multiview",      
     "use_navigation_bar": true
-  }
+  },
+  "web_accessible_resources": [
+    "index.js"
+  ]
 }
