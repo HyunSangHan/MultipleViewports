@@ -1,5 +1,11 @@
 'use strict'
 
 window.onload = e => {
-  console.log(e.currentTarget.location.href)
+  const prevURL = e.srcElement.referrer;
+  const currentURL = e.currentTarget.location.href;
+  prevURL !== currentURL && (
+    whale.runtime.sendMessage(currentURL, response => {
+      console.log(response);
+    })
+  )
 }
