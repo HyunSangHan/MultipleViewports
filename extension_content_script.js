@@ -12,3 +12,16 @@ window.onload = e => {
     })
   );
 };
+
+window.onhashchange = e => {
+  const prevURL = e.oldURL;
+  const currentURL = e.newURL;
+  const splitArray = e.currentTarget.navigator.userAgent.split(" ");
+  const windowType = splitArray[splitArray.length - 1];
+
+  prevURL !== currentURL && (
+    whale.runtime.sendMessage(`${windowType} ${currentURL}`, response => {
+      console.log(response);
+    })
+  );
+};
