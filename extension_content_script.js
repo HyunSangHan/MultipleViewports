@@ -10,5 +10,5 @@ window.onload = e => {
     whale.runtime.sendMessage(`${windowType} ${currentURL}`, response => {
       console.log(response);
     })
-  )
-}
+  );
+};

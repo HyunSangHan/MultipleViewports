@@ -28,6 +28,75 @@ whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
   url !== undefined && whale.sidebarAction.show({ url: customizeURL(url, null) + "#is_triggered_by_tab#", reload: false });
 });
 
+const serviceDomains = {
+  "naver" : {
+    "desktopHost" : "www.naver.com",
+    "mobileHost" : "m.naver.com",
+    "desktop" : "www.naver.com",
+    "mobile" : "m.naver.com"
+  },
+  "naversearch" : {
+    "desktopHost" : "search.naver.com",
+    "mobileHost" : "m.search.naver.com",
+    "desktop" : "search.naver.com",
+    "mobile" : "m.search.naver.com"
+  },
+  "navershoppingsearch" : {
+    "desktopHost" : "search.shopping.naver.com",
+    "mobileHost" : "msearch.shopping.naver.com",
+    "desktop" : "search.shopping.naver.com/search/all.nhn",
+    "mobile" : "msearch.shopping.naver.com/search/all"
+  },
+  "naverplace" : {
+    "desktopHost" : "store.naver.com",
+    "mobileHost" : "m.place.naver.com",
+    "desktop" : "store.naver.com/restaurants/detail?id=",
+    "mobile" : "m.place.naver.com/restaurant/"
+  },
+  "naverreservation" : {
+    "desktopHost" : "booking.naver.com",
+    "mobileHost" : "m.booking.naver.com",
+    "desktop" : "booking.naver.com",
+    "mobile" : "m.booking.naver.com"
+  },
+  "naverblog" : {
+    "desktopHost" : "blog.naver.com",
+    "mobileHost" : "m.blog.naver.com",
+    "desktop" : "blog.naver.com",
+    "mobile" : "m.blog.naver.com"
+  },
+  "daum" : {
+    "desktopHost" : "www.daum.net",
+    "mobileHost" : "m.daum.net",
+    "desktop" : "www.daum.net",
+    "mobile" : "m.daum.net"
+  },
+  "daumsearch" : {
+    "desktopHost" : "search.daum.net",
+    "mobileHost" : "m.search.daum.net",
+    "desktop" : "search.daum.net",
+    "mobile" : "m.search.daum.net"
+  },
+  "coupang" : {
+    "desktopHost" : "www.coupang.com",
+    "mobileHost" : "m.coupang.com",
+    "desktop" : "www.coupang.com",
+    "mobile" : "m.coupang.com"
+  },
+  "facebook" : {
+    "desktopHost" : "www.facebook.com",
+    "mobileHost" : "m.facebook.com",
+    "desktop" : "www.facebook.com",
+    "mobile" : "m.facebook.com"
+  },
+  "youtube" : {
+    "desktopHost" : "www.youtube.com",
+    "mobileHost" : "m.youtube.com",
+    "desktop" : "www.youtube.com",
+    "mobile" : "m.youtube.com"
+  }
+}
+
 const parseURL = url => {
   if (url) {
     const parsedHost = url.split("/")[2];
@@ -51,7 +120,7 @@ const customizeURL = (url, type) => {
     } else if (service === "naverblog" && to === "desktop") { 
       const blogMobileURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]).split("&proxyReferer=")[1];
       replacedURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]);
-      blogMobileURL && ( replacedURL = decodeURIComponent(blogMobileURL) )
+      blogMobileURL && ( replacedURL = decodeURIComponent(blogMobileURL) );
     } else {
       replacedURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]);
     }
