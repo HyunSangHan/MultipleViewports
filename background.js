@@ -81,6 +81,12 @@ const serviceDomains = {
     "desktop" : "blog.naver.com",
     "mobile" : "m.blog.naver.com"
   },
+  "naverqna" : {
+    "desktopHost" : "kin.naver.com",
+    "mobileHost" : "m.kin.naver.com",
+    "desktop" : "kin.naver.com",
+    "mobile" : "m.kin.naver.com/mobile"
+  },
   "naverpay" : {
     "desktopHost" : "order.pay.naver.com",
     "mobileHost" : "m.pay.naver.com",
