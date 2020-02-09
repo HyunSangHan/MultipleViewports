@@ -67,6 +67,12 @@ const serviceDomains = {
     "desktop" : "blog.naver.com",
     "mobile" : "m.blog.naver.com"
   },
+  "naverpay" : {
+    "desktopHost" : "order.pay.naver.com",
+    "mobileHost" : "m.pay.naver.com",
+    "desktop" : "order.pay.naver.com",
+    "mobile" : "m.pay.naver.com/o"
+  },
   "daum" : {
     "desktopHost" : "www.daum.net",
     "mobileHost" : "m.daum.net",
