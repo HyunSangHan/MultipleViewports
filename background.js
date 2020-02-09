@@ -28,6 +28,17 @@ whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
   url !== undefined && whale.sidebarAction.show({ url: customizeURL(url, null) + "#is_triggered_by_tab#", reload: false });
 });
 
+const parseURL = url => {
+  if (url) {
+    const parsedHost = url.split("/")[2];
+    for (const service in serviceDomains) {
+      if (serviceDomains[service]["desktopHost"] === parsedHost) return [service, "desktop", "mobile"]; // from desktop to mobile
+      if (serviceDomains[service]["mobileHost"] == parsedHost) return [service, "mobile", "desktop"]; // from mobile to desktop
+    }
+  }
+  return
+}
+
 const customizeURL = (url, type) => {
   const parsedURLInfo = parseURL(url);
   let replacedURL = url;
