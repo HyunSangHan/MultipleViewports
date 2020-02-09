@@ -7,9 +7,7 @@ window.onload = e => {
   const windowType = splitArray[splitArray.length - 1];
 
   prevURL !== currentURL && (
-    whale.runtime.sendMessage(`${windowType} ${currentURL}`, response => {
-      console.log(response);
-    })
+    whale.runtime.sendMessage({ windowType, currentURL })
   );
 };
 
@@ -20,8 +18,6 @@ window.onhashchange = e => {
   const windowType = splitArray[splitArray.length - 1];
 
   prevURL !== currentURL && (
-    whale.runtime.sendMessage(`${windowType} ${currentURL}`, response => {
-      console.log(response);
-    })
+    whale.runtime.sendMessage({ windowType, currentURL })
   );
 };

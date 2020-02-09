@@ -7,22 +7,20 @@ whale.sidebarAction.onClicked.addListener(result => {
   isSidebarOpened = result.opened;
 });
 
-whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
+whale.runtime.onMessage.addListener(request => {
   if (isSidebarOpened) {
-    const [windowType, currentURL] = message.split(" ");
+    const { windowType, currentURL } = request;
     const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
     const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
     const customizedURL = customizeURL(targetURL, windowType);
     if (targetURL !== undefined) {
       if (windowType === "sidebar" && !isTriggeredByTab && prevDesktopURL !== customizedURL) {
         // View on active tab
-        sendResponse("Sync complete from the sidebar to the active tab");
         prevDesktopURL = targetURL;
         whale.tabs.update({ url: customizedURL, active: true }, tab => {});
         return
       } else if (windowType !== "sidebar"){
         // View on sidebar 
-        sendResponse("Sync complete from the active tab to the sidebar");
         prevDesktopURL = targetURL;
         whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
         return
