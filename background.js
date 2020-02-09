@@ -5,6 +5,13 @@ let prevDesktopURL = null;
 
 whale.sidebarAction.onClicked.addListener(result => {
   isSidebarOpened = result.opened;
+  if (isSidebarOpened) {
+    whale.tabs.getSelected(null, function(tab) {
+      const targetURL = tab.url;
+      const customizedURL = customizeURL(targetURL, null);
+      whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
+    });
+  }
 });
 
 whale.runtime.onMessage.addListener(request => {
