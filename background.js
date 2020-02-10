@@ -7,12 +7,27 @@ let sidebarTabId = null;
 whale.sidebarAction.onClicked.addListener(result => {
   isSyncOn = result.opened;
   if (isSyncOn) {
+    whale.sidebarAction.setTitle({
+      title: `Device Sync 켜짐`
+    });
+    whale.sidebarAction.setBadgeText({text: "ON"});
+    whale.sidebarAction.setBadgeBackgroundColor({
+      color: `#ff0000`
+    });
     // alert(whale.runtime.getManifest().name)
     whale.tabs.getSelected(null, function(tab) {
       // !sidebarTabId && ( sidebarTabId = tab.id ); // TODO: 현재탭ID가 들어가고 있음. 사이드바탭ID를 가져올 API사용 필요
       const targetURL = tab.url;
       const customizedURL = customizeURL(targetURL, null);
       whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
+    });
+  } else {
+    whale.sidebarAction.setTitle({
+      title: `Device Sync 꺼짐`
+    });
+    whale.sidebarAction.setBadgeText({text: "OFF"});
+    whale.sidebarAction.setBadgeBackgroundColor({
+      color: `#aaaaaa`
     });
   }
 });
