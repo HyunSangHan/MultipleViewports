@@ -6,6 +6,60 @@ let sidebarTabId = null;
 
 whale.sidebarAction.onClicked.addListener(result => {
   isSyncOn = result.opened;
+  toggleBadge(isSyncOn);
+  
+  if (isSyncOn) {
+    whale.tabs.getSelected(null, tab => {
+      const targetURL = tab.url;
+      const customizedURL = customizeURL(targetURL, null);
+      whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
+    });
+  }
+  return
+});
+
+whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (isSyncOn) {
+    const { isFromMobile, currentURL, isDeviceSyncApp } = message;
+    const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
+    const customizedURL = customizeURL(targetURL, isFromMobile);
+    const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
+    const isURLChanged = prevDesktopURL !== customizedURL;
+
+    isDeviceSyncApp && isFromMobile && !sidebarTabId && (
+      sidebarTabId = sender.tab.id 
+    );
+
+    const isMobileRequest = sidebarTabId === sender.tab.id;
+    
+    if (isURLChanged) {
+      if (isMobileRequest && isFromMobile && !isTriggeredByTab) {
+        // View on active tab(Desktop)
+        prevDesktopURL = customizedURL;
+        whale.tabs.update({ url: customizedURL, active: true });
+      } else if (!isFromMobile) {
+        // View on sidebar(Mobile)
+        prevDesktopURL = targetURL;
+        whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
+      };
+    };
+  }
+  return
+});
+
+whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
+  if (isSyncOn) {
+    const customizedURL = customizeURL(url, null);
+    prevDesktopURL = url;
+
+    if (url !== undefined) {
+      whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
+    }
+  }
+  return
+});
+
+const toggleBadge = isSyncOn => {
   if (isSyncOn) {
     whale.sidebarAction.setTitle({
       title: `Device Sync 켜짐`
@@ -13,13 +67,6 @@ whale.sidebarAction.onClicked.addListener(result => {
     whale.sidebarAction.setBadgeText({text: "ON"});
     whale.sidebarAction.setBadgeBackgroundColor({
       color: `#ff0000`
-    });
-    // alert(whale.runtime.getManifest().name)
-    whale.tabs.getSelected(null, function(tab) {
-      // !sidebarTabId && ( sidebarTabId = tab.id ); // TODO: 현재탭ID가 들어가고 있음. 사이드바탭ID를 가져올 API사용 필요
-      const targetURL = tab.url;
-      const customizedURL = customizeURL(targetURL, null);
-      whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
     });
   } else {
     whale.sidebarAction.setTitle({
@@ -30,38 +77,8 @@ whale.sidebarAction.onClicked.addListener(result => {
       color: `#aaaaaa`
     });
   }
-});
-
-whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (isSyncOn) {
-    const { isFromMobile, currentURL, isDeviceSyncApp } = message;
-    !sidebarTabId && isDeviceSyncApp && isFromMobile && ( sidebarTabId = sender.tab.id );
-    const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
-    const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
-    const customizedURL = customizeURL(targetURL, isFromMobile);
-    if (targetURL !== undefined) {
-      if (isFromMobile && !isTriggeredByTab && prevDesktopURL !== customizedURL && sidebarTabId === sender.tab.id) { // TODO: 로직 검증 필요
-        // View on active tab
-        prevDesktopURL = targetURL;
-        whale.tabs.update({ url: customizedURL, active: true }, tab => {});
-        return
-      } else if (!isFromMobile){
-        // View on sidebar 
-        prevDesktopURL = targetURL;
-        whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
-        return
-      };
-    };
-  }
-});
-
-whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
-  if (isSyncOn) { // TODO: 로직 검증 필요
-    const customizedURL = customizeURL(url, null);
-    prevDesktopURL = url;
-    url !== undefined && whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
-  }
-});
+  return
+}
 
 const serviceDomains = {
   "naver" : {
