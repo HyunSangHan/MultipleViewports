@@ -24,7 +24,7 @@
   //     "16": "images/logo5_1.png"
   // },
     "default_title": "Multiview",      
-    "use_navigation_bar": true
+    "use_navigation_bar": false
   },
   "web_accessible_resources": [
     "index.js"
