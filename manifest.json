@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
   "name": "Device Sync",
-  "version": "0.5.0",
+  "version": "0.9.0",
   "description": "View desktop and mobile UI at the same time!",
   "icons": {},
-  // "default_locale": "ko",
+  "default_locale": "ko",
   "permissions": [
     "tabs",
     "storage"
@@ -21,9 +21,9 @@
   ], 
   "sidebar_action": {
     "default_page": "index.html", 
-  //   "default_icon": {                
-  //     "16": "images/logo5_1.png"
-  // },
+    "default_icon": {                
+      "16": "./device_sync_logo.jpg"
+    },
     "default_title": "Device Sync",      
     "use_navigation_bar": false
   }
