@@ -2,11 +2,13 @@
 
 let isSidebarOpened = false;
 let prevDesktopURL = null;
+let sidebarTabId = null;
 
 whale.sidebarAction.onClicked.addListener(result => {
   isSidebarOpened = result.opened;
   if (isSidebarOpened) {
     whale.tabs.getSelected(null, function(tab) {
+      !sidebarTabId && ( sidebarTabId = tab.id ); // TODO: 현재탭ID가 들어가고 있음. 사이드바탭ID를 가져올 API사용 필요
       const targetURL = tab.url;
       const customizedURL = customizeURL(targetURL, null);
       whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
@@ -14,14 +16,15 @@ whale.sidebarAction.onClicked.addListener(result => {
   }
 });
 
-whale.runtime.onMessage.addListener(request => {
+whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const tabId = sender.tab.id
   if (isSidebarOpened) {
-    const { windowType, currentURL } = request;
+    const { windowType, currentURL } = message;
     const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
     const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
     const customizedURL = customizeURL(targetURL, windowType);
     if (targetURL !== undefined) {
-      if (windowType === "sidebar" && !isTriggeredByTab && prevDesktopURL !== customizedURL) {
+      if (windowType === "sidebar" && !isTriggeredByTab && prevDesktopURL !== customizedURL && sidebarTabId === tabId) { // TODO: 로직 검증 필요
         // View on active tab
         prevDesktopURL = targetURL;
         whale.tabs.update({ url: customizedURL, active: true }, tab => {});
@@ -37,7 +40,7 @@ whale.runtime.onMessage.addListener(request => {
 });
 
 whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
-  if (isSidebarOpened) {
+  if (isSidebarOpened && sidebarTabId === tabId) { // TODO: 로직 검증 필요
     const customizedURL = customizeURL(url, null);
     prevDesktopURL = url;
     url !== undefined && whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
