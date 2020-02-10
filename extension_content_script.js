@@ -45,13 +45,20 @@ window.onload = e => {
         우측의 Pin 표시를 눌러 고정하시면 더 보기 편해요!
         </div>
         <div>
-          <u id="extension-help-close" style="font-size: 2px; text-align: right; font-weight: lighter; cursor: pointer;">
+          <u id="extension-help-tooltip-close-button" style="font-size: 2px; text-align: right; font-weight: lighter; cursor: pointer;">
             알겠어요. 이제 그만 볼래요.
           </u>
         </div>
       </div>
     `)
   document.body.appendChild(div);
+
+  const tooltip = document.getElementById("extension-help-tooltip");
+  const closeButton = document.getElementById("extension-help-tooltip-close-button");
+  closeButton.addEventListener("click", () => {
+    tooltip.parentNode.removeChild(tooltip);
+  });
+
 };
 
 window.onhashchange = e => {
