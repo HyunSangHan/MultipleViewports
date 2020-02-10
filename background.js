@@ -34,18 +34,18 @@ whale.sidebarAction.onClicked.addListener(result => {
 
 whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (isSyncOn) {
-    const { windowType, currentURL, isDeviceSyncApp } = message;
-    !sidebarTabId && isDeviceSyncApp && windowType === "sidebar" && ( sidebarTabId = sender.tab.id );
+    const { isFromMobile, currentURL, isDeviceSyncApp } = message;
+    !sidebarTabId && isDeviceSyncApp && isFromMobile && ( sidebarTabId = sender.tab.id );
     const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
     const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
-    const customizedURL = customizeURL(targetURL, windowType);
+    const customizedURL = customizeURL(targetURL, isFromMobile);
     if (targetURL !== undefined) {
-      if (windowType === "sidebar" && !isTriggeredByTab && prevDesktopURL !== customizedURL && sidebarTabId === sender.tab.id) { // TODO: 로직 검증 필요
+      if (isFromMobile && !isTriggeredByTab && prevDesktopURL !== customizedURL && sidebarTabId === sender.tab.id) { // TODO: 로직 검증 필요
         // View on active tab
         prevDesktopURL = targetURL;
         whale.tabs.update({ url: customizedURL, active: true }, tab => {});
         return
-      } else if (windowType !== "sidebar"){
+      } else if (!isFromMobile){
         // View on sidebar 
         prevDesktopURL = targetURL;
         whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
@@ -155,14 +155,14 @@ const parseURL = url => {
   return
 }
 
-const customizeURL = (url, type) => {
+const customizeURL = (url, isFromMobile) => {
   const parsedURLInfo = parseURL(url);
   let replacedURL = url;
   if (parsedURLInfo) {
     const [service, from, to] = parsedURLInfo;
-    if (type === "sidebar" && to === "mobile") {
+    if (isFromMobile && to === "mobile") {
       replacedURL = url;
-    } else if (type !== "sidebar" && to === "desktop") { 
+    } else if (!isFromMobile && to === "desktop") { 
       replacedURL = url;
     } else if (service === "naverblog" && to === "desktop") { 
       const blogMobileURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]).split("&proxyReferer=")[1];
