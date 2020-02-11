@@ -1,6 +1,6 @@
 'use strict'
 
-const isFromSyncApp = whale.runtime.getManifest().name === "Device Sync";
+const isFromSyncApp = whale.runtime.getManifest().name === "Browser Sync";
 
 window.onload = e => {
   const prevURL = e.srcElement.referrer;
@@ -10,8 +10,8 @@ window.onload = e => {
 
   isURLChanged && (
     sendMessagePromise({ isFromSidebar, currentURL, isFromSyncApp })
-    .then(isDeviceSyncRequest => {
-      isFromSidebar && isDeviceSyncRequest && (
+    .then(isBrowserSyncRequest => {
+      isFromSidebar && isBrowserSyncRequest && (
         whale.storage.local.get(
           ["tooltip_closed"],
           result => {
@@ -38,7 +38,7 @@ const sendMessagePromise = currentStatus => {
   return new Promise((resolve, reject) => {
     whale.runtime.sendMessage(currentStatus, response => {
       if(response.isAsyncDone) {
-        resolve(response.isDeviceSyncRequest);
+        resolve(response.isBrowserSyncRequest);
       } else {
         reject('Something wrong!');
       }
@@ -73,7 +73,8 @@ const tooltipHTML = `
     color: #fff;
     background-color: #333;
     padding: 14px 22px;
-    border-radius: 11px;font-family: 'Helvetica Neue', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Dotum, 돋움, sans-serif;
+    border-radius: 11px;
+    font-family: 'Helvetica Neue', 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', Dotum, 돋움, sans-serif;
     opacity: 0.9;">
     <div style="
       position: absolute;

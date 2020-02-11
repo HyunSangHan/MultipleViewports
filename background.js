@@ -30,12 +30,12 @@ whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sidebarTabId = sender.tab.id;
     };
 
-    const isDeviceSyncRequest = sidebarTabId === sender.tab.id;
+    const isBrowserSyncRequest = sidebarTabId === sender.tab.id;
     const isAsyncDone = true;
-    sendResponse({ isDeviceSyncRequest, isAsyncDone });
+    sendResponse({ isBrowserSyncRequest, isAsyncDone });
     
     if (isURLChanged) {
-      if (isDeviceSyncRequest && isFromSidebar && !isTriggeredByTab) {
+      if (isBrowserSyncRequest && isFromSidebar && !isTriggeredByTab) {
         // View on active tab(Desktop)
         prevDesktopURL = customizedURL;
         whale.tabs.update({ url: customizedURL, active: true });
@@ -64,7 +64,7 @@ whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
 const toggleBadge = isSyncOn => {
   if (isSyncOn) {
     whale.sidebarAction.setTitle({
-      title: `Device Sync 켜짐`
+      title: `Browser Sync 켜짐`
     });
     whale.sidebarAction.setBadgeText({text: "ON"});
     whale.sidebarAction.setBadgeBackgroundColor({
@@ -72,7 +72,7 @@ const toggleBadge = isSyncOn => {
     });
   } else {
     whale.sidebarAction.setTitle({
-      title: `Device Sync 꺼짐`
+      title: `Browser Sync 꺼짐`
     });
     whale.sidebarAction.setBadgeText({text: "OFF"});
     whale.sidebarAction.setBadgeBackgroundColor({

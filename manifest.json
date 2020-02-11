@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Device Sync",
-  "version": "0.9.0",
+  "name": "Browser Sync",
+  "version": "0.9.1",
   "description": "View desktop and mobile UI at the same time!",
   "icons": {},
   "default_locale": "ko",
@@ -22,9 +22,9 @@
   "sidebar_action": {
     "default_page": "index.html", 
     "default_icon": {                
-      "16": "./device_sync_logo.jpg"
+      "16": "./browser_sync_logo.png"
     },
-    "default_title": "Device Sync",      
+    "default_title": "Browser Sync",      
     "use_navigation_bar": false
   }
 }
