@@ -1,45 +1,62 @@
 'use strict'
 
-const isDeviceSyncApp = whale.runtime.getManifest().name === "Device Sync";
+const isFromSyncApp = whale.runtime.getManifest().name === "Device Sync";
 
 window.onload = e => {
   const prevURL = e.srcElement.referrer;
   const currentURL = e.currentTarget.location.href;
   const isURLChanged = prevURL !== currentURL;
-  const isFromMobile = navigator.userAgent.split(" ").reverse()[0] === "sidebar";
-  
-  isDeviceSyncApp && isURLChanged && (
-    whale.runtime.sendMessage({ isFromMobile, currentURL, isDeviceSyncApp })
-  );
+  const isFromSidebar = navigator.userAgent.split(" ").reverse()[0] === "sidebar";
 
-  whale.storage.local.get(["tooltip_closed"], result => makeTooltip(result, isFromMobile));
+  isURLChanged && (
+    sendMessagePromise({ isFromSidebar, currentURL, isFromSyncApp })
+    .then(isDeviceSyncRequest => {
+      isFromSidebar && isDeviceSyncRequest && (
+        whale.storage.local.get(
+          ["tooltip_closed"],
+          result => {
+            const isTooltipClosed = result.tooltip_closed;
+            if (!isTooltipClosed) {
+              makeTooltip(result, isFromSidebar);
+            };        
+          }
+        )
+      );
+    })
+    .catch(e => console.log(e))
+  )
 };
 
 window.onhashchange = e => {
-  const prevURL = e.oldURL;
   const currentURL = e.newURL;
-  const isURLChanged = prevURL !== currentURL;
-  const isFromMobile = e.currentTarget.navigator.userAgent.split(" ").reverse()[0] === "sidebar";
+  const isFromSidebar = e.currentTarget.navigator.userAgent.split(" ").reverse()[0] === "sidebar";
 
-  isDeviceSyncApp && isURLChanged && (
-    whale.runtime.sendMessage({ isFromMobile, currentURL, isDeviceSyncApp })
-  );
+  whale.runtime.sendMessage({ isFromSidebar, currentURL, isFromSyncApp })
 };
 
-const makeTooltip = (result, isFromMobile) => {
-  const isTooltipClosed = !!result.tooltip_closed;
-  if (!isTooltipClosed) {
-    const div = document.createElement('div');
-    isDeviceSyncApp && isFromMobile && ( 
-      div.innerHTML = tooltipHTML
-    )
-    document.body.appendChild(div);
-  }
+const sendMessagePromise = currentStatus => {
+  return new Promise((resolve, reject) => {
+    whale.runtime.sendMessage(currentStatus, response => {
+      if(response.isAsyncDone) {
+        resolve(response.isDeviceSyncRequest);
+      } else {
+        reject('Something wrong!');
+      }
+    });
+  });
+};
+
+const makeTooltip = () => {
+  const div = document.createElement('div');
+  div.innerHTML = tooltipHTML
+  document.body.appendChild(div);
+
   const tooltip = document.getElementById("extension-help-tooltip");
   const closeButton = document.getElementById("extension-help-tooltip-close-button");
+
   closeButton.addEventListener("click", () => {
     tooltip.parentNode.removeChild(tooltip);
-    whale.storage.local.set({"tooltip_closed": true});
+    whale.storage.local.set({ "tooltip_closed": true });
   });
 };
 

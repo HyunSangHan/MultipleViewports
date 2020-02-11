@@ -20,24 +20,26 @@ whale.sidebarAction.onClicked.addListener(result => {
 
 whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (isSyncOn) {
-    const { isFromMobile, currentURL, isDeviceSyncApp } = message;
+    const { isFromSidebar, currentURL, isFromSyncApp } = message;
     const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
-    const customizedURL = customizeURL(targetURL, isFromMobile);
+    const customizedURL = customizeURL(targetURL, isFromSidebar);
     const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
     const isURLChanged = prevDesktopURL !== customizedURL;
 
-    isDeviceSyncApp && isFromMobile && !sidebarTabId && (
-      sidebarTabId = sender.tab.id 
-    );
+    if (isFromSyncApp && isFromSidebar && !sidebarTabId) {
+      sidebarTabId = sender.tab.id;
+    };
 
-    const isMobileRequest = sidebarTabId === sender.tab.id;
+    const isDeviceSyncRequest = sidebarTabId === sender.tab.id;
+    const isAsyncDone = true;
+    sendResponse({ isDeviceSyncRequest, isAsyncDone });
     
     if (isURLChanged) {
-      if (isMobileRequest && isFromMobile && !isTriggeredByTab) {
+      if (isDeviceSyncRequest && isFromSidebar && !isTriggeredByTab) {
         // View on active tab(Desktop)
         prevDesktopURL = customizedURL;
         whale.tabs.update({ url: customizedURL, active: true });
-      } else if (!isFromMobile) {
+      } else if (!isFromSidebar) {
         // View on sidebar(Mobile)
         prevDesktopURL = targetURL;
         whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
@@ -172,14 +174,14 @@ const parseURL = url => {
   return
 }
 
-const customizeURL = (url, isFromMobile) => {
+const customizeURL = (url, isFromSidebar) => {
   const parsedURLInfo = parseURL(url);
   let replacedURL = url;
   if (parsedURLInfo) {
     const [service, from, to] = parsedURLInfo;
-    if (isFromMobile && to === "mobile") {
+    if (isFromSidebar && to === "mobile") {
       replacedURL = url;
-    } else if (!isFromMobile && to === "desktop") { 
+    } else if (!isFromSidebar && to === "desktop") { 
       replacedURL = url;
     } else if (service === "naverblog" && to === "desktop") { 
       const blogMobileURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]).split("&proxyReferer=")[1];
