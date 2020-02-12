@@ -10,19 +10,19 @@
     "storage"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["./src/background.js"],
     "persistent": true
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["extension_content_script.js"]
+      "js": ["./src/extension_content_script.js"]
     }
   ],
   "sidebar_action": {
     "default_page": "index.html", 
     "default_icon": {                
-      "16": "./browser_sync_logo.png"
+      "16": "./images/browser_sync_logo.png"
     },
     "default_title": "Browser Sync",      
     "use_navigation_bar": false
