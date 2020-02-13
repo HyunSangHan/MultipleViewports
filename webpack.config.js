@@ -46,6 +46,10 @@ module.exports = (env, options) => {
           to: "./_locales/",
         },
         {
+          from: path.join(rootDir, "static"),
+          to: "./",
+        },
+        {
           from: path.join(rootDir, "src/manifest.json"),
           transform(content) {
             let space = 0;

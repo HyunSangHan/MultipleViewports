@@ -6,7 +6,7 @@
   "sidebar_action": {
     "default_page": "index.html", 
     "default_icon": {                
-      "16": "./browser_sync_logo.png"
+      "16": "./icon/browser_sync_logo.png"
     },
     "default_title": "Browser Sync",      
     "use_navigation_bar": false
