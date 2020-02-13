@@ -16,6 +16,13 @@ module.exports = {
     "whale": true
   },
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
+  },
   "plugins": [
     "prettier",
     "@typescript-eslint"
