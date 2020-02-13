@@ -1,37 +1,42 @@
 'use strict'
 
-let isSyncOn = false;
-let prevDesktopURL = null;
-let sidebarTabId = null;
+type Message = {
+  isFromSidebar: boolean, 
+  currentURL: string,
+  isFromSyncApp: boolean;
+}
 
-whale.sidebarAction.onClicked.addListener(result => {
+let isSyncOn: boolean = false;
+let prevDesktopURL: string = null;
+let sidebarTabId: number = null;
+
+whale.sidebarAction.onClicked.addListener((result: any): void => {
   isSyncOn = result.opened;
   toggleBadge(isSyncOn);
   
   if (isSyncOn) {
     whale.tabs.getSelected(null, tab => {
-      const targetURL = tab.url;
-      const customizedURL = customizeURL(targetURL, null);
+      const targetURL: string = tab.url;
+      const customizedURL: string = customizeURL(targetURL, null);
       whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
     });
   }
-  return
 });
 
-whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
+whale.runtime.onMessage.addListener((message: Message, sender: any, sendResponse: any): void => {
   if (isSyncOn) {
     const { isFromSidebar, currentURL, isFromSyncApp } = message;
-    const targetURL = currentURL.split("#is_triggered_by_tab#")[0];
-    const customizedURL = customizeURL(targetURL, isFromSidebar);
-    const isTriggeredByTab = currentURL.split("#is_triggered_by_tab#")[1] === "";
-    const isURLChanged = prevDesktopURL !== customizedURL;
+    const targetURL: string = currentURL.split("#is_triggered_by_tab#")[0];
+    const customizedURL: string = customizeURL(targetURL, isFromSidebar);
+    const isTriggeredByTab: boolean = currentURL.split("#is_triggered_by_tab#")[1] === "";
+    const isURLChanged: boolean = prevDesktopURL !== customizedURL;
 
     if (isFromSyncApp && isFromSidebar && !sidebarTabId) {
       sidebarTabId = sender.tab.id;
     };
 
-    const isBrowserSyncRequest = sidebarTabId === sender.tab.id;
-    const isAsyncDone = true;
+    const isBrowserSyncRequest: boolean = sidebarTabId === sender.tab.id;
+    const isAsyncDone: boolean = true;
     sendResponse({ isBrowserSyncRequest, isAsyncDone });
     
     if (isURLChanged) {
@@ -46,22 +51,20 @@ whale.runtime.onMessage.addListener((message, sender, sendResponse) => {
       };
     };
   }
-  return
 });
 
-whale.tabs.onUpdated.addListener((tabId, { url }, tab) => {
+whale.tabs.onUpdated.addListener((tabId, { url }, tab): void => {
   if (isSyncOn) {
-    const customizedURL = customizeURL(url, null);
+    const customizedURL: string = customizeURL(url, null);
     prevDesktopURL = url;
 
     if (url !== undefined) {
       whale.sidebarAction.show({ url: customizedURL + "#is_triggered_by_tab#", reload: false });
     }
   }
-  return
 });
 
-const toggleBadge = isSyncOn => {
+const toggleBadge = (isSyncOn: boolean): void => {
   if (isSyncOn) {
     whale.sidebarAction.setTitle({
       title: `Browser Sync 켜짐`
@@ -79,10 +82,9 @@ const toggleBadge = isSyncOn => {
       color: `#aaaaaa`
     });
   }
-  return
 }
 
-const serviceDomains = {
+const serviceDomains: object = {
   "naver" : {
     "desktopHost" : "www.naver.com",
     "mobileHost" : "m.naver.com",
@@ -163,7 +165,7 @@ const serviceDomains = {
   }
 }
 
-const parseURL = url => {
+const parseURL = (url: string): Array<string> => {
   if (url) {
     const parsedHost = url.split("/")[2];
     for (const service in serviceDomains) {
@@ -171,20 +173,19 @@ const parseURL = url => {
       if (serviceDomains[service]["mobileHost"] == parsedHost) return [service, "mobile", "desktop"]; // from mobile to desktop
     }
   }
-  return
 }
 
-const customizeURL = (url, isFromSidebar) => {
-  const parsedURLInfo = parseURL(url);
-  let replacedURL = url;
+const customizeURL = (url: string, isFromSidebar: boolean): string => {
+  const parsedURLInfo: Array<string> = parseURL(url);
+  let replacedURL: string = url;
   if (parsedURLInfo) {
-    const [service, from, to] = parsedURLInfo;
+    const [service, from, to]: Array<string> = parsedURLInfo;
     if (isFromSidebar && to === "mobile") {
       replacedURL = url;
     } else if (!isFromSidebar && to === "desktop") { 
       replacedURL = url;
     } else if (service === "naverblog" && to === "desktop") { 
-      const blogMobileURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]).split("&proxyReferer=")[1];
+      const blogMobileURL: string = url.replace(serviceDomains[service][from], serviceDomains[service][to]).split("&proxyReferer=")[1];
       replacedURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]);
       blogMobileURL && ( replacedURL = decodeURIComponent(blogMobileURL) );
     } else {
