@@ -6,16 +6,17 @@ type Message = {
   isFromSyncApp: boolean;
 };
 
+const { tabs, sidebarAction, runtime } = whale;
 let isSyncOn: boolean = false;
 let prevDesktopURL: string = null;
 let sidebarTabId: number = null;
 
-whale.sidebarAction.onClicked.addListener((result: any): void => {
+sidebarAction.onClicked.addListener((result: any): void => {
   isSyncOn = result.opened;
   toggleBadge(isSyncOn);
 
   if (isSyncOn) {
-    whale.tabs.getSelected(null, (tab: any): void => {
+    tabs.getSelected(null, (tab: any): void => {
       const targetURL: string = tab.url;
       const customizedURL: string = customizeURL(targetURL, null);
       syncToMobile(customizedURL);
@@ -23,7 +24,7 @@ whale.sidebarAction.onClicked.addListener((result: any): void => {
   }
 });
 
-whale.runtime.onMessage.addListener(
+runtime.onMessage.addListener(
   (message: Message, sender: any, sendResponse: any): void => {
     if (isSyncOn) {
       const { isFromSidebar, currentURL, isFromSyncApp } = message;
@@ -56,7 +57,7 @@ whale.runtime.onMessage.addListener(
   }
 );
 
-whale.tabs.onUpdated.addListener((tabId, { url }): void => {
+tabs.onUpdated.addListener((tabId, { url }): void => {
   if (isSyncOn) {
     const customizedURL: string = customizeURL(url, null);
     prevDesktopURL = url;
@@ -65,11 +66,11 @@ whale.tabs.onUpdated.addListener((tabId, { url }): void => {
 });
 
 const syncToDesktop = (url: string): void => {
-  whale.tabs.update({ url: url, active: true });
+  tabs.update({ url: url, active: true });
 };
 
 const syncToMobile = (url: string): void => {
-  whale.sidebarAction.show({
+  sidebarAction.show({
     url: url + "#is_triggered_by_tab#",
     reload: false
   });
@@ -77,19 +78,19 @@ const syncToMobile = (url: string): void => {
 
 const toggleBadge = (isSyncOn: boolean): void => {
   if (isSyncOn) {
-    whale.sidebarAction.setTitle({
+    sidebarAction.setTitle({
       title: `Browser Sync 켜짐`
     });
-    whale.sidebarAction.setBadgeText({ text: "ON" });
-    whale.sidebarAction.setBadgeBackgroundColor({
+    sidebarAction.setBadgeText({ text: "ON" });
+    sidebarAction.setBadgeBackgroundColor({
       color: `#ff0000`
     });
   } else {
-    whale.sidebarAction.setTitle({
+    sidebarAction.setTitle({
       title: `Browser Sync 꺼짐`
     });
-    whale.sidebarAction.setBadgeText({ text: "OFF" });
-    whale.sidebarAction.setBadgeBackgroundColor({
+    sidebarAction.setBadgeText({ text: "OFF" });
+    sidebarAction.setBadgeBackgroundColor({
       color: `#aaaaaa`
     });
   }

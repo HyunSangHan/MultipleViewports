@@ -1,5 +1,6 @@
-const isFromSyncApp: boolean =
-  whale.runtime.getManifest().name === "Browser Sync";
+const { storage, runtime } = whale;
+
+const isFromSyncApp: boolean = runtime.getManifest().name === "Browser Sync";
 
 window.onload = (e: any) => {
   const prevURL: string = e.srcElement.referrer;
@@ -13,7 +14,7 @@ window.onload = (e: any) => {
       .then(isBrowserSyncRequest => {
         isFromSidebar &&
           isBrowserSyncRequest &&
-          whale.storage.local.get(["tooltip_closed"], result => {
+          storage.local.get(["tooltip_closed"], result => {
             const isTooltipClosed = result.tooltip_closed;
             if (!isTooltipClosed) {
               makeTooltip();
@@ -28,12 +29,12 @@ window.onhashchange = (e: any) => {
   const isFromSidebar: boolean =
     e.currentTarget.navigator.userAgent.split(" ").reverse()[0] === "sidebar";
 
-  whale.runtime.sendMessage({ isFromSidebar, currentURL, isFromSyncApp });
+  runtime.sendMessage({ isFromSidebar, currentURL, isFromSyncApp });
 };
 
 const sendMessagePromise = (currentStatus: object): Promise<boolean> => {
   return new Promise((resolve, reject) => {
-    whale.runtime.sendMessage(currentStatus, response => {
+    runtime.sendMessage(currentStatus, response => {
       if (response.isAsyncDone) {
         resolve(response.isBrowserSyncRequest);
       } else {
@@ -57,7 +58,7 @@ const makeTooltip = (): void => {
 
   closeButton.addEventListener("click", (): void => {
     tooltip.parentNode.removeChild(tooltip);
-    whale.storage.local.set({ tooltip_closed: true });
+    storage.local.set({ tooltip_closed: true });
   });
 };
 
