@@ -1,17 +1,13 @@
-// eslint-disable-next-line no-unused-vars
 const webpack = require("webpack");
-
 const path = require("path");
-
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
 const rootDir = path.join(__dirname, "./");
 
 module.exports = (env, options) => {
   const config = {
     entry: {
-      background: path.join(rootDir, "src", "background", "index.ts"),
+      background: path.join(rootDir, "src", "background"),
       "extension_content_script": path.join(
         rootDir,
         "src",
