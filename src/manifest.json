@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Browser Sync",
+  "description": "View desktop and mobile UI at the same time!",
+  "default_locale": "ko",
+  "sidebar_action": {
+    "default_page": "index.html", 
+    "default_icon": {                
+      "16": "./browser_sync_logo.png"
+    },
+    "default_title": "Browser Sync",      
+    "use_navigation_bar": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["extension_content_script.bundle.js"]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.bundle.js"],
+    "persistent": true
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

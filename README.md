@@ -3,7 +3,7 @@
 # Whale Extension - Browser Sync
 PC와 Mobile의 브라우저 싱크를 맞춰 함께 보여주는 웨일 확장앱입니다.
 
-![Browser Sync](https://github.com/HyunSangHan/WhaleBrowserSync/blob/master/images/browser_sync_motion.gif)
+![Browser Sync](https://github.com/HyunSangHan/WhaleBrowserSync/blob/master/static/img/browser_sync_motion.gif)
 
 > 보고 있는 웹페이지가 모바일에서는 어떻게 보여지는지 궁금할 때...  
 > PC버전과 모바일버전 UI를 번갈아 확인하기 위해 매번 개발자도구를 껐다켰다 하기 번거로울 때...  
