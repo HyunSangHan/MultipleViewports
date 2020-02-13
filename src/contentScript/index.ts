@@ -1,12 +1,12 @@
 'use strict'
 
-const isFromSyncApp = whale.runtime.getManifest().name === "Browser Sync";
+const isFromSyncApp: boolean = whale.runtime.getManifest().name === "Browser Sync";
 
-window.onload = e => {
-  const prevURL = e.srcElement.referrer;
-  const currentURL = e.currentTarget.location.href;
-  const isURLChanged = prevURL !== currentURL;
-  const isFromSidebar = navigator.userAgent.split(" ").reverse()[0] === "sidebar";
+window.onload = (e: any) => {
+  const prevURL: string = e.srcElement.referrer;
+  const currentURL: string = e.currentTarget.location.href;
+  const isURLChanged: boolean = prevURL !== currentURL;
+  const isFromSidebar: boolean = navigator.userAgent.split(" ").reverse()[0] === "sidebar";
 
   isURLChanged && (
     sendMessagePromise({ isFromSidebar, currentURL, isFromSyncApp })
@@ -17,7 +17,7 @@ window.onload = e => {
           result => {
             const isTooltipClosed = result.tooltip_closed;
             if (!isTooltipClosed) {
-              makeTooltip(result, isFromSidebar);
+              makeTooltip();
             };        
           }
         )
@@ -27,40 +27,40 @@ window.onload = e => {
   )
 };
 
-window.onhashchange = e => {
-  const currentURL = e.newURL;
-  const isFromSidebar = e.currentTarget.navigator.userAgent.split(" ").reverse()[0] === "sidebar";
+window.onhashchange = (e: any) => {
+  const currentURL: string = e.newURL;
+  const isFromSidebar: boolean = e.currentTarget.navigator.userAgent.split(" ").reverse()[0] === "sidebar";
 
   whale.runtime.sendMessage({ isFromSidebar, currentURL, isFromSyncApp })
 };
 
-const sendMessagePromise = currentStatus => {
+const sendMessagePromise = (currentStatus: object): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     whale.runtime.sendMessage(currentStatus, response => {
       if(response.isAsyncDone) {
         resolve(response.isBrowserSyncRequest);
       } else {
-        reject('Something wrong!');
+        reject("Something is wrong!");
       }
     });
   });
 };
 
-const makeTooltip = () => {
-  const div = document.createElement('div');
+const makeTooltip = (): void => {
+  const div: HTMLElement = document.createElement('div');
   div.innerHTML = tooltipHTML
   document.body.appendChild(div);
 
-  const tooltip = document.getElementById("extension-help-tooltip");
-  const closeButton = document.getElementById("extension-help-tooltip-close-button");
+  const tooltip: HTMLElement = document.getElementById("extension-help-tooltip");
+  const closeButton: HTMLElement = document.getElementById("extension-help-tooltip-close-button");
 
-  closeButton.addEventListener("click", () => {
+  closeButton.addEventListener("click", (): void => {
     tooltip.parentNode.removeChild(tooltip);
     whale.storage.local.set({ "tooltip_closed": true });
   });
 };
 
-const tooltipHTML = `
+const tooltipHTML: string = `
   <div id="extension-help-tooltip" style="
     position: fixed;
     z-index: 3000;
