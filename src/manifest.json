@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Browser Sync",
-  "description": "View desktop and mobile UI at the same time!",
+  "description": "PC와 Mobile의 UI를 한 화면에서 동시에!",
   "default_locale": "ko",
   "sidebar_action": {
     "default_page": "index.html", 
