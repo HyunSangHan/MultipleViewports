@@ -1,3 +1,5 @@
+[확장앱스토어 바로가기 링크](https://store.whale.naver.com/detail/oebpjpinlkhmpegobkdfgojbngjhjgbg?hl=ko)
+
 # Whale Extension - Browser Sync
 PC와 Mobile의 브라우저 싱크를 맞춰 함께 보여주는 웨일 확장앱입니다.
 
