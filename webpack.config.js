@@ -44,6 +44,7 @@ module.exports = (env, options) => {
         {
           from: path.join(rootDir, "static"),
           to: "./",
+          ignore: ['browser_sync_motion.gif']
         },
         {
           from: path.join(rootDir, "src/manifest.json"),
