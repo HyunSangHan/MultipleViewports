@@ -47,6 +47,12 @@ const serviceDomains: object = {
     desktop: "order.pay.naver.com",
     mobile: "m.pay.naver.com/o"
   },
+  vlive: {
+    desktopHost: "www.vlive.tv",
+    mobileHost: "m.vlive.tv",
+    desktop: "www.vlive.tv",
+    mobile: "m.vlive.tv"
+  },
   daum: {
     desktopHost: "www.daum.net",
     mobileHost: "m.daum.net",
