@@ -1,6 +1,6 @@
 {
   "name": "browsersync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "View desktop and mobile UI at the same time!",
   "scripts": {
     "build": "webpack --mode production",

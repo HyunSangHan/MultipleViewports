@@ -89,7 +89,7 @@ const tooltipHTML: string = `
       width: 0;
       height: 0;">
     </div>
-    <div style="font-size: 15px;">
+    <div style="font-size: 14px;">
     우측의 Pin 표시를 눌러 고정하시면 더 보기 편해요!
     </div>
     <div>
