@@ -1,4 +1,4 @@
-import customizeURL from "./customizeURL";
+import customizeURL, { syncIgnore } from "./customizeURL";
 
 type Message = {
   isFromSidebar: boolean;
@@ -30,6 +30,8 @@ runtime.onMessage.addListener(
       const { isFromSidebar, currentURL, isFromSyncApp } = message;
       const targetURL: string = currentURL.split("#is_triggered_by_tab#")[0];
       const customizedURL: string = customizeURL(targetURL, isFromSidebar);
+      console.log("t : " + targetURL);
+      console.log("c : " + customizedURL);
       const isTriggeredByTab: boolean =
         currentURL.split("#is_triggered_by_tab#")[1] === "";
       const isURLChanged: boolean = prevDesktopURL !== customizedURL;
@@ -70,10 +72,20 @@ const syncToDesktop = (url: string): void => {
 };
 
 const syncToMobile = (url: string): void => {
-  sidebarAction.show({
-    url: url + "#is_triggered_by_tab#",
-    reload: false
-  });
+  let mobileTaggedURL = url;
+
+  if (url.includes("m.vlive.tv/home")) {
+    mobileTaggedURL = "https://m.vlive.tv/home";
+  } else {
+    mobileTaggedURL = url + "#is_triggered_by_tab#";
+  }
+
+  if (!syncIgnore.includes(url)) {
+    sidebarAction.show({
+      url: mobileTaggedURL,
+      reload: false
+    });
+  }
 };
 
 const toggleBadge = (isSyncOn: boolean): void => {

@@ -85,6 +85,8 @@ const serviceDomains: object = {
   }
 };
 
+export const syncIgnore: Array<string> = ["https://m.vlive.tv/events"];
+
 const parseURL = (url: string): Array<string> => {
   if (url) {
     const parsedHost = url.split("/")[2];
