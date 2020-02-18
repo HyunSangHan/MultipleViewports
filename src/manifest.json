@@ -3,10 +3,14 @@
   "name": "Browser Sync",
   "description": "PC와 Mobile의 UI를 한 화면에서 동시에!",
   "default_locale": "ko",
+  "icons": {
+    "16": "./icon/icon_16.png",
+    "48": "./icon/icon_48.png"
+  },
   "sidebar_action": {
     "default_page": "index.html", 
     "default_icon": {                
-      "16": "./icon/browser_sync_logo.png"
+      "16": "./icon/icon_16.png"
     },
     "default_title": "Browser Sync",      
     "use_navigation_bar": false
