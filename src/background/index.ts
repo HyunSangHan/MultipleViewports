@@ -1,10 +1,10 @@
 import customizeURL, { syncIgnore } from "./customizeURL";
 
-type Message = {
+interface Message {
   isFromSidebar: boolean;
   currentURL: string;
   isFromSyncApp: boolean;
-};
+}
 
 const { tabs, sidebarAction, runtime } = whale;
 let isSyncOn: boolean = false;
