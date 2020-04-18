@@ -7,13 +7,8 @@ const rootDir = path.join(__dirname, "./");
 module.exports = (env, options) => {
   const config = {
     entry: {
-      background: path.join(rootDir, "src", "background"),
-      "extension_content_script": path.join(
-        rootDir,
-        "src",
-        "contentScript",
-        "index.ts",
-      ),
+      background: path.join(rootDir, "lib", "background"),
+      contentScript: path.join(rootDir, "lib", "contentScript"),
     },
     output: {
       path: path.join(rootDir, "dist"),
