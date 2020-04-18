@@ -13,7 +13,7 @@ let sidebarTabId: number = null;
 
 sidebarAction.onClicked.addListener((result: any): void => {
   isSyncOn = result.opened;
-  toggleBadge(isSyncOn);
+  toggleBadge();
 
   if (isSyncOn) {
     tabs.getSelected(null, (tab: any): void => {
@@ -68,7 +68,7 @@ tabs.onUpdated.addListener((tabId, { url }): void => {
 });
 
 const syncToDesktop = (url: string): void => {
-  tabs.update({ url: url, active: true });
+  tabs.update({ url, active: true });
 };
 
 const syncToMobile = (url: string): void => {
@@ -88,7 +88,7 @@ const syncToMobile = (url: string): void => {
   }
 };
 
-const toggleBadge = (isSyncOn: boolean): void => {
+const toggleBadge = (): void => {
   if (isSyncOn) {
     sidebarAction.setTitle({
       title: `Browser Sync 켜짐`

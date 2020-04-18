@@ -85,25 +85,27 @@ const serviceDomains: object = {
   }
 };
 
-export const syncIgnore: Array<string> = ["https://m.vlive.tv/events"];
+export const syncIgnore: string[] = ["https://m.vlive.tv/events"];
 
-const parseURL = (url: string): Array<string> => {
+const parseURL = (url: string): string[] => {
   if (url) {
     const parsedHost = url.split("/")[2];
     for (const service in serviceDomains) {
-      if (serviceDomains[service]["desktopHost"] === parsedHost)
-        return [service, "desktop", "mobile"]; // from desktop to mobile
-      if (serviceDomains[service]["mobileHost"] === parsedHost)
-        return [service, "mobile", "desktop"]; // from mobile to desktop
+      if (serviceDomains.hasOwnProperty(service)) {
+        if (serviceDomains[service][`desktopHost`] === parsedHost)
+          return [service, "desktop", "mobile"]; // from desktop to mobile
+        if (serviceDomains[service][`mobileHost`] === parsedHost)
+          return [service, "mobile", "desktop"]; // from mobile to desktop
+      }
     }
   }
 };
 
 const customizeURL = (url: string, isFromSidebar: boolean): string => {
-  const parsedURLInfo: Array<string> = parseURL(url);
+  const parsedURLInfo: string[] = parseURL(url);
   let replacedURL: string = url;
   if (parsedURLInfo) {
-    const [service, from, to]: Array<string> = parsedURLInfo;
+    const [service, from, to]: string[] = parsedURLInfo;
     if (isFromSidebar && to === "mobile") {
       replacedURL = url;
     } else if (!isFromSidebar && to === "desktop") {
