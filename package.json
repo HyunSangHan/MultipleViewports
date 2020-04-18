@@ -52,7 +52,7 @@
     "webpack-cli": "^3.3.10"
   },
   "lint-staged": {
-    "*.ts": "eslint --fix"
+    "*.ts": "tslint --fix"
   },
   "husky": {
     "hooks": {

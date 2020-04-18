@@ -21,7 +21,7 @@ window.onload = (e: any) => {
             }
           });
       })
-      .catch(e => console.log(e));
+      .catch(err => console.log(err));
 };
 
 window.onhashchange = (e: any) => {
