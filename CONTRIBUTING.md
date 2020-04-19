@@ -20,12 +20,12 @@ cd WhaleBrowserSync && npm install
 - Please remember that there are also test codes.
 
 ### 4th Step : Test in Whale browser
-- Run the script for prepublish as below :
+- Run the script for `prepare`(prepublish) as below :
     ```
-    npm run prepublish
+    npm run prepare
     ```
 
-- Publish it to your local environment of Whale browser. (whale://extensions/)
+- Upload all files in `dist` directory to your local Whale browser. (whale://extensions/)
 
-### 5th Step : Submit codes
+### 5th Step : Submit the code
 - Commit your changes, push it and PR.
