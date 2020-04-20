@@ -7,8 +7,8 @@ const { request, expect } = chai;
 
 const testURIs: object = {
   Naver : {
-    desktop : "https://www.naver.com",
-    mobile : "https://m.naver.com"
+    desktop : "https://www.naver.com/",
+    mobile : "https://m.naver.com/"
   },
   NaverSearch : {
     desktop : "https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync",
@@ -64,6 +64,10 @@ const testURIs: object = {
   },
 }
 
+const statusCodeIgnore: string[] = [
+  "NaverBlog", "Coupang"
+]
+
 describe("The number of elements in the list", () => {
   it("should be the same", () => {
     expect(Object.keys(testURIs).length).to.equal(Object.keys(serviceDomains).length);
@@ -85,23 +89,25 @@ describe("Services registered on the forced sync list", () => {
         expect(replacedDesktopURI).to.equal(desktop);
       });
 
-      it("should respond 200 status code by replacedMobileURI", done => {
-        request(replacedMobileURI).get('/')
-        .end((err, res) => {
-          expect(err).to.be.null;
-          expect(res).to.have.status(200);
-          done();
+      if (!statusCodeIgnore.includes(serviceName)) {
+        it("should respond 200 status code by replacedMobileURI", done => {
+          request(replacedMobileURI).get('/')
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            done();
+          });
         });
-      });
 
-      it("should respond 200 status code by replacedDesktopURI", done => {
-        request(replacedDesktopURI).get('/')
-        .end((err, res) => {
-          expect(err).to.be.null;
-          expect(res).to.have.status(200);
-          done();
+        it("should respond 200 status code by replacedDesktopURI", done => {
+          request(replacedDesktopURI).get('/')
+          .end((err, res) => {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            done();
+          });
         });
-      });
+      }
     });
   }
 });
