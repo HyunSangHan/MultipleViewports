@@ -1,4 +1,4 @@
-const serviceDomains: object = {
+export const serviceDomains: object = {
   naver: {
     desktopHost: "www.naver.com",
     mobileHost: "m.naver.com",

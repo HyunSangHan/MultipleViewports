@@ -1,104 +1,120 @@
-import customizeURL from "../src/background/customizeURL";
-import chai, { expect } from "chai";
+import customizeURL, { serviceDomains } from "../src/background/customizeURL";
+import chai from "chai";
 import chaiHttp from "chai-http";
-chai.use(chaiHttp);
 
-describe("Function customizeURL", () => {
-  describe("from tab", () => {
-    it("should replace desktopURL with mobileURL of Naver", () => {
-      expect(customizeURL("https://www.naver.com", false)).to.equal("https://m.naver.com");
+chai.use(chaiHttp);
+const { request, expect } = chai;
+
+const testURIs: object = {
+  Naver : {
+    desktop : "https://www.naver.com",
+    mobile : "https://m.naver.com"
+  },
+  NaverSearch : {
+    desktop : "https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync",
+    mobile : "https://m.search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync"
+  },
+  NaverShoppingSearch : {
+    desktop : "https://search.shopping.naver.com/search/all.nhn?query=vitamin",
+    mobile : "https://msearch.shopping.naver.com/search/all?query=vitamin"
+  },
+  NaverPlace : {
+    desktop : "https://store.naver.com/restaurants/detail?id=1728162345",
+    mobile : "https://m.place.naver.com/restaurant/1728162345"
+  },
+  NaverReservation : {
+    desktop : "https://booking.naver.com/booking/13/bizes/222724?area=plt",
+    mobile : "https://m.booking.naver.com/booking/13/bizes/222724?area=plt"
+  },
+  NaverBlog : {
+    desktop : "https://blog.naver.com/PostList.nhn?blogId=naver_diary",
+    mobile : "https://m.blog.naver.com/PostList.nhn?blogId=naver_diary"
+  },
+  NaverQnA : {
+    desktop : "https://kin.naver.com/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577",
+    mobile : "https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577"
+  },
+  NaverPay : {
+    desktop : "https://order.pay.naver.com/home",
+    mobile : "https://m.pay.naver.com/o/home"
+  },
+  NaverVlive : {
+    desktop : "https://www.vlive.tv/home",
+    mobile : "https://m.vlive.tv/home"
+  },
+  Daum : {
+    desktop : "https://www.daum.net/",
+    mobile : "https://m.daum.net/"
+  },
+  DaumSearch : {
+    desktop : "https://search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver",
+    mobile : "https://m.search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver"
+  },
+  Coupang : {
+    desktop : "https://www.coupang.com/",
+    mobile : "https://m.coupang.com/"
+  },
+  Facebook : {
+    desktop : "https://www.facebook.com/",
+    mobile : "https://m.facebook.com/"
+  },
+  Youtube : {
+    desktop : "https://www.youtube.com/",
+    mobile : "https://m.youtube.com/"
+  },
+}
+
+describe("The number of elements in the list", () => {
+  it("should be the same", () => {
+    expect(Object.keys(testURIs).length).to.equal(Object.keys(serviceDomains).length);
+  });
+});
+
+describe("Services registered on the forced sync list", () => {
+  for (const serviceName of Object.keys(testURIs)) {
+    const { desktop, mobile } = testURIs[serviceName];
+    const replacedMobileURI: string = customizeURL(desktop, false);
+    const replacedDesktopURI: string = customizeURL(mobile, true);
+
+    describe(serviceName, () => {
+      it("should replace desktopURL with mobileURL", () => {
+        expect(replacedMobileURI).to.equal(mobile);
+      });
+
+      it("should replace mobileURL with desktopURL", () => {
+        expect(replacedDesktopURI).to.equal(desktop);
+      });
+
+      it("should respond 200 status code by replacedMobileURI", done => {
+        request(replacedMobileURI).get('/')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+      });
+
+      it("should respond 200 status code by replacedDesktopURI", done => {
+        request(replacedDesktopURI).get('/')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+      });
     });
-    it("should replace desktopURL with mobileURL of Naver Search", () => {
-      expect(customizeURL("https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync", false)).to.equal("https://m.search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync");
-    });
-    it("should replace desktopURL with mobileURL of Naver Shopping Search", () => {
-      expect(customizeURL("https://search.shopping.naver.com/search/all.nhn?query=vitamin", false)).to.equal("https://msearch.shopping.naver.com/search/all?query=vitamin");
-    });
-    it("should replace desktopURL with mobileURL of Naver Place", () => {
-      expect(customizeURL("https://store.naver.com/restaurants/detail?id=1728162345", false)).to.equal("https://m.place.naver.com/restaurant/1728162345");
-    });
-    it("should replace desktopURL with mobileURL of Naver Reservation", () => {
-      expect(customizeURL("https://booking.naver.com/booking/13/bizes/222724?area=plt", false)).to.equal("https://m.booking.naver.com/booking/13/bizes/222724?area=plt");
-    });
-    it("should replace desktopURL with mobileURL of Naver Blog", () => {
-      expect(customizeURL("https://blog.naver.com/PostList.nhn?blogId=naver_diary", false)).to.equal("https://m.blog.naver.com/PostList.nhn?blogId=naver_diary");
-    });
-    it("should replace desktopURL with mobileURL of Naver QnA", () => {
-      expect(customizeURL("https://kin.naver.com/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577", false)).to.equal("https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577");
-    });
-    it("should replace desktopURL with mobileURL of Naver Pay", () => {
-      expect(customizeURL("https://order.pay.naver.com/home", false)).to.equal("https://m.pay.naver.com/o/home");
-    });
-    it("should replace desktopURL with mobileURL of Naver Vlive", () => {
-      expect(customizeURL("https://www.vlive.tv/home", false)).to.equal("https://m.vlive.tv/home");
-    });
-    it("should replace desktopURL with mobileURL of Daum", () => {
-      expect(customizeURL("https://www.daum.net/", false)).to.equal("https://m.daum.net/");
-    });
-    it("should replace desktopURL with mobileURL of Daumsearch", () => {
-      expect(customizeURL("https://search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver", false)).to.equal("https://m.search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver");
-    });
-    it("should replace desktopURL with mobileURL of Coupang", () => {
-      expect(customizeURL("https://www.coupang.com/", false)).to.equal("https://m.coupang.com/");
-    });
-    it("should replace desktopURL with mobileURL of Facebook", () => {
-      expect(customizeURL("https://www.facebook.com/", false)).to.equal("https://m.facebook.com/");
-    });
-    it("should replace desktopURL with mobileURL of Youtube", () => {
-      expect(customizeURL("https://www.youtube.com/", false)).to.equal("https://m.youtube.com/");
-    });
-    it("should not replace the other URLs", () => {
-      const url = "http://phenomenon.kr"
-      expect(customizeURL(url, false)).to.equal(url);
-    });
+  }
+});
+
+describe("Services unregistered on the forced sync list", () => {
+  const replacedMobileURI: string = customizeURL("http://phenomenon.kr", false);
+  const replacedDesktopURI: string = customizeURL("http://phenomenon.kr", true);
+
+  it("should not replace desktopURL with mobileURL", () => {
+    expect(replacedMobileURI).to.equal("http://phenomenon.kr");
   });
 
-  describe("from sidebar", () => {
-    it("should replace mobileURL with desktopURL of Naver", () => {
-      expect(customizeURL("https://m.naver.com", true)).to.equal("https://www.naver.com");
-    });
-    it("should replace mobileURL with desktopURL of Naver Search", () => {
-      expect(customizeURL("https://m.search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync", true)).to.equal("https://search.naver.com/search.naver?sm=top_hty&fbm=1&ie=utf8&query=Whale+Browser+Sync");
-    });
-    it("should replace mobileURL with desktopURL of Naver Shopping Search", () => {
-      expect(customizeURL("https://msearch.shopping.naver.com/search/all?query=vitamin", true)).to.equal("https://search.shopping.naver.com/search/all.nhn?query=vitamin");
-    });
-    it("should replace mobileURL with desktopURL of Naver Place", () => {
-      expect(customizeURL("https://m.place.naver.com/restaurant/1728162345", true)).to.equal("https://store.naver.com/restaurants/detail?id=1728162345");
-    });
-    it("should replace mobileURL with desktopURL of Naver Reservation", () => {
-      expect(customizeURL("https://m.booking.naver.com/booking/13/bizes/222724?area=plt", true)).to.equal("https://booking.naver.com/booking/13/bizes/222724?area=plt");
-    });
-    it("should replace mobileURL with desktopURL of Naver Blog", () => {
-      expect(customizeURL("https://m.blog.naver.com/PostList.nhn?blogId=naver_diary", true)).to.equal("https://blog.naver.com/PostList.nhn?blogId=naver_diary");
-    });
-    it("should replace mobileURL with desktopURL of Naver QnA", () => {
-      expect(customizeURL("https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577", true)).to.equal("https://kin.naver.com/qna/detail.nhn?d1id=8&dirId=80101&docId=353771577");
-    });
-    it("should replace mobileURL with desktopURL of Naver Pay", () => {
-      expect(customizeURL("https://m.pay.naver.com/o/home", true)).to.equal("https://order.pay.naver.com/home");
-    });
-    it("should replace mobileURL with desktopURL of Naver Vlive", () => {
-      expect(customizeURL("https://m.vlive.tv/home", true)).to.equal("https://www.vlive.tv/home");
-    });
-    it("should replace mobileURL with desktopURL of Daum", () => {
-      expect(customizeURL("https://m.daum.net/", true)).to.equal("https://www.daum.net/");
-    });
-    it("should replace mobileURL with desktopURL of Daumsearch", () => {
-      expect(customizeURL("https://m.search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver", true)).to.equal("https://search.daum.net/search?nil_suggest=btn&w=tot&DA=SBC&q=naver");
-    });
-    it("should replace mobileURL with desktopURL of Coupang", () => {
-      expect(customizeURL("https://m.coupang.com/", true)).to.equal("https://www.coupang.com/");
-    });
-    it("should replace mobileURL with desktopURL of Facebook", () => {
-      expect(customizeURL("https://m.facebook.com/", true)).to.equal("https://www.facebook.com/");
-    });
-    it("should replace mobileURL with desktopURL of Youtube", () => {
-      expect(customizeURL("https://m.youtube.com/", true)).to.equal("https://www.youtube.com/");
-    });
-    it("should not replace the other URLs", () => {
-      const url = "http://phenomenon.kr"
-      expect(customizeURL(url, false)).to.equal(url);
-    });
+  it("should not replace mobileURL with desktopURL", () => {
+    expect(replacedDesktopURI).to.equal("http://phenomenon.kr");
   });
 });
