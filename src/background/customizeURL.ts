@@ -106,24 +106,23 @@ const customizeURL = (url: string, isFromSidebar: boolean): string => {
   let replacedURL: string = url;
   if (parsedURLInfo) {
     const [service, from, to]: string[] = parsedURLInfo;
-    if (isFromSidebar && to === "mobile") {
-      replacedURL = url;
-    } else if (!isFromSidebar && to === "desktop") {
-      replacedURL = url;
-    } else if (service === "naverblog" && to === "desktop") {
-      const blogMobileURL: string = url
-        .replace(serviceDomains[service][from], serviceDomains[service][to])
-        .split("&proxyReferer=")[1];
-      replacedURL = url.replace(
-        serviceDomains[service][from],
-        serviceDomains[service][to]
-      );
-      blogMobileURL && (replacedURL = decodeURIComponent(blogMobileURL));
-    } else {
-      replacedURL = url.replace(
-        serviceDomains[service][from],
-        serviceDomains[service][to]
-      );
+    switch (true) {
+      case isFromSidebar && to === "mobile":
+      case !isFromSidebar && to === "desktop":
+        replacedURL = url;
+        break;
+      case service === "naverblog" && to === "desktop":
+        const blogMobileURL: string = url
+          .replace(serviceDomains[service][from], serviceDomains[service][to])
+          .split("&proxyReferer=")[1];
+        replacedURL = url.replace(
+          serviceDomains[service][from],
+          serviceDomains[service][to]
+        );
+        blogMobileURL && (replacedURL = decodeURIComponent(blogMobileURL));
+        break;
+      default: replacedURL = url.replace(serviceDomains[service][from], serviceDomains[service][to]);
+        break;
     }
   }
   return replacedURL;
