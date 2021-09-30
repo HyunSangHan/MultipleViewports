@@ -1,6 +1,6 @@
 {
   "name": "browsersync",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "View desktop and mobile UI at the same time!",
   "scripts": {
     "build": "webpack --mode production",
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/HyunSangHan/WhaleBrowserSync#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
+    "@babel/cli": "^7.15.7",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-typescript": "^7.9.0",
