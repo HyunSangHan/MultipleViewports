@@ -35,7 +35,9 @@ window.onhashchange = (e: any) => {
 const sendMessagePromise = (currentStatus: object): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     runtime.sendMessage(currentStatus, response => {
-      if (response.isAsyncDone) {
+      if (!response) {
+        resolve(false);
+      } else if (response.isAsyncDone) {
         resolve(response.isBrowserSyncRequest);
       } else {
         reject("Something is wrong!");
